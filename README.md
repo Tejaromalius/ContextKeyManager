@@ -1,8 +1,4 @@
-# Context Keys Manager
-
-Register, edit, and delete custom VS Code context keys (usable in `when` clauses) via commands without editing source each time.
-
-# ContextKeyManager
+# Context Key Manager
 
 ContextKeyManager lets you register, edit, toggle, and delete custom VS Code context keys (usable in `when` clauses) directly from commands—no need to write a separate extension each time.
 
@@ -28,9 +24,13 @@ ContextKeyManager lets you register, edit, toggle, and delete custom VS Code con
 3. Use the key in `keybindings.json`, menus, views: `"when": "user.myMode == true"`.
 4. Toggle quickly:
 
-   ```json
-   { "key": "ctrl+alt+m", "command": "contextKeysManager.toggle", "args": "user.myMode" }
-   ```
+```json
+{
+  "key": "ctrl+alt+m",
+  "command": "contextKeysManager.toggle",
+  "args": "user.myMode"
+}
+```
 
 5. Edit or delete via the dedicated commands.
 
@@ -72,14 +72,3 @@ Install the generated `.vsix` via: Command Palette → `Extensions: Install from
 
 - Keys stored in `globalState`; clearing VS Code state or using a different profile resets them.
 - Deleting a key sets its context value to `undefined` then removes it from storage.
-
-## License
-
-MIT © Tejaromalius
-
-See `LICENSE` for full text.
-
-## Notes
-
-- Removing a key sets its context value to `undefined`.
-- Keys persist via `globalState`; clearing VS Code state removes them.
