@@ -6,6 +6,7 @@ interface StoredContextKey {
 }
 
 const STORAGE_KEY = 'contextKeysManager.registeredKeys';
+let myStatusBarItem: vscode.StatusBarItem;
 
 function loadKeys(context: vscode.ExtensionContext): StoredContextKey[] {
   return context.globalState.get<StoredContextKey[]>(STORAGE_KEY, []);
@@ -13,6 +14,27 @@ function loadKeys(context: vscode.ExtensionContext): StoredContextKey[] {
 
 function saveKeys(context: vscode.ExtensionContext, keys: StoredContextKey[]) {
   context.globalState.update(STORAGE_KEY, keys);
+  updateStatusBar(context, keys);
+}
+
+function updateStatusBar(context: vscode.ExtensionContext, keys?: StoredContextKey[]) {
+  const count = vscode.workspace.getConfiguration('contextKeysManager').get<number>('statusBarCount', 0);
+  if (count <= 0) {
+    if (myStatusBarItem) { myStatusBarItem.hide(); }
+    return;
+  }
+
+  const currentKeys = keys || loadKeys(context);
+  
+  if (currentKeys.length === 0) {
+    myStatusBarItem.text = '$(circle-slash) No Keys';
+    myStatusBarItem.show();
+    return;
+  }
+
+  const displayKeys = currentKeys.slice(0, count).map(k => `${k.key}: ${k.value}`).join(' | ');
+  myStatusBarItem.text = displayKeys;
+  myStatusBarItem.show();
 }
 
 function parseValue(raw: string, type: string): any {
@@ -132,10 +154,17 @@ async function toggleKey(context: vscode.ExtensionContext, keyArg?: string) {
 
   await vscode.commands.executeCommand('setContext', targetKey, existing.value);
   saveKeys(context, keys);
-  vscode.window.showInformationMessage(`Context key '${targetKey}' set to ${String(existing.value)}.`);
+  
+  if (!keyArg) {
+      vscode.window.showInformationMessage(`Context key '${targetKey}' set to ${String(existing.value)}.`);
+  }
 }
 
 export function activate(context: vscode.ExtensionContext) {
+  // Create status bar item
+  myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+  context.subscriptions.push(myStatusBarItem);
+
   // Re-hydrate stored keys on activation
   const stored = loadKeys(context);
   stored.forEach(k => {
@@ -149,7 +178,15 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('contextKeysManager.toggle', (...args: any[]) => toggleKey(context, args[0]))
   );
 
-  vscode.window.setStatusBarMessage(`Context Keys Loaded: ${stored.length}`, 3000);
+  // Update status bar initially
+  updateStatusBar(context);
+  
+  // Listen for config changes
+  context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
+    if (e.affectsConfiguration('contextKeysManager.statusBarCount')) {
+        updateStatusBar(context);
+    }
+  }));
 }
 
 export function deactivate() {

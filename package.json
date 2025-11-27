@@ -3,7 +3,7 @@
   "displayName": "ContextKeyManager",
   "description": "Register, edit, toggle, and delete custom VS Code context keys for when clauses.",
   "publisher": "Tejaromalius",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "engines": {
     "vscode": "^1.95.0"
   },
@@ -40,7 +40,17 @@
         "command": "contextKeysManager.toggle",
         "title": "Context Keys: Toggle Boolean"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "ContextKeyManager",
+      "properties": {
+        "contextKeysManager.statusBarCount": {
+          "type": "number",
+          "default": 0,
+          "description": "Number of context keys to display in the status bar. Set to 0 to disable."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
