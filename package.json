@@ -1,0 +1,57 @@
+{
+  "name": "contextkeymanager",
+  "displayName": "ContextKeyManager",
+  "description": "Register, edit, toggle, and delete custom VS Code context keys for when clauses.",
+  "publisher": "Tejaromalius",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:contextKeysManager.register",
+    "onCommand:contextKeysManager.edit",
+    "onCommand:contextKeysManager.delete",
+    "onCommand:contextKeysManager.toggle"
+  ],
+  "main": "dist/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tejaromalius/ContextKeyManager"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "contextKeysManager.register",
+        "title": "Context Keys: Register"
+      },
+      {
+        "command": "contextKeysManager.edit",
+        "title": "Context Keys: Edit Value"
+      },
+      {
+        "command": "contextKeysManager.delete",
+        "title": "Context Keys: Delete"
+      },
+      {
+        "command": "contextKeysManager.toggle",
+        "title": "Context Keys: Toggle Boolean"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p .",
+    "watch": "tsc -watch -p .",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.25",
+    "@types/vscode": "^1.95.0",
+    "typescript": "^5.3.3",
+    "vsce": "^2.15.0"
+  }
+}
