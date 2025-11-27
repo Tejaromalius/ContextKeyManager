@@ -1,0 +1,9 @@
+# directories
+dist/
+node_modules/
+.vscode/
+
+# files
+*.vsix
+package-lock.json
+
